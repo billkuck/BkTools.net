@@ -9,19 +9,21 @@ namespace BkTools.General.CommandLineUiFromInterface
     {
         private readonly INTERFACE_TYPE _implementation;
         private readonly CommandLineRootCommand _rootCommand;
+        private readonly string _description;
 
-        public CommandLineFromInterface(INTERFACE_TYPE implementation)
+        public CommandLineFromInterface(INTERFACE_TYPE implementation, string description)
         {
             _implementation = implementation;
             _rootCommand = GetRootCommand();
+            _description = description;
         }
 
-        public void Execute(string[] args) 
-            => _rootCommand.RootCommand.Invoke(args);
+        public void Execute(string[] args)
+            => _rootCommand.Invoke(args);
 
-        private CommandLineRootCommand GetRootCommand() 
+        private CommandLineRootCommand GetRootCommand()
             => new CommandLineRootCommand(
-                rootCommand: new RootCommand(description: $"RootCommand for type: {typeof(INTERFACE_TYPE).Name}"),
+                rootCommand: new RootCommand(description: _description),
                 subCommands:
                     typeof(INTERFACE_TYPE)
                         .GetTypeInfo()
@@ -33,70 +35,76 @@ namespace BkTools.General.CommandLineUiFromInterface
         {
             var methodCommand = new CommandLineCommand(
                 command: new Command(method.Name, $"Method {method.Name}"),
-                options: method.GetParameters().Select(parameter => GetOption(parameter)));
+                options: method.GetParameters().Select(parameter => CreateOption(parameter)));
 
-            methodCommand.Command.SetHandler(InvokeMethod(method));
+            methodCommand.Command.SetAction(InvokeMethod(method));
             return methodCommand;
         }
-
-        private Action<InvocationContext> InvokeMethod(MethodInfo method) 
-            => (context) => InvokeMethodWithContext(context, method);
-
-        private void InvokeMethodWithContext(InvocationContext context, MethodInfo method) 
-            => method.Invoke(_implementation, GetArguments(context, method));
-
-        private object?[]? GetArguments(InvocationContext context, MethodInfo method) 
-            => [.. method.GetParameters()
-                .Select(parameter => GetArgumentValue(method, parameter, context))];
-
-        private object? GetArgumentValue(MethodInfo method, ParameterInfo parameter, InvocationContext context)
-            => context
-                .ParseResult
-                .FindResultFor(
-                    _rootCommand[method.Name][parameter.Name!].Option
-                )?.GetValueOrDefault();
-
-        private static readonly Dictionary<string, Func<ParameterInfo, Option>> GetValueByDataType 
-            = new Dictionary<string, Func<ParameterInfo, Option>>()
-        {
-            { "Int", p => GetOption(p, (arg) => int.Parse(arg)) },
-            { "String", p => GetOption(p, (arg) => arg) },
-            { "Boolean", p => GetOption(p, (arg) => bool.Parse(arg)) }
-        };
-
-        private CommandLineOption GetOption(ParameterInfo parameter, bool isRequired = true) 
+        private CommandLineOption CreateOption(ParameterInfo parameter, bool isRequired = true)
             => GetValueByDataType.TryGetValue(parameter.ParameterType.Name, out var conversionMethod)
                 ? new CommandLineOption(conversionMethod.Invoke(parameter))
                 : throw new Exception($"Conversion from {parameter.ParameterType.Name} is not implemented");
 
+        private static readonly Dictionary<string, Func<ParameterInfo, Option>> GetValueByDataType
+            = new Dictionary<string, Func<ParameterInfo, Option>>()
+                {
+                    { "Int", p => GetOption(p, (arg) => int.Parse(arg)) },
+                    { "String", p => GetOption(p, (arg) => arg) },
+                    { "Boolean", p => GetOption(p, (arg) => bool.Parse(arg)) }
+                };
+
         private static Option GetOption<T>(ParameterInfo parameter, Func<string, T> fromString, bool isRequired = true)
         {
-            const string defaultParameterName = "DEFAULT";
-            var optionName = $"--{parameter.Name ?? defaultParameterName}";
+            var optionName = GetOptionName(parameter);
 
             var resultOption = new Option<T>(
-                aliases: [optionName, parameter.Name ?? defaultParameterName],
-                description: string.Empty,
-                parseArgument: arg => InvokeArgumentParser(arg, optionName, fromString)!);
+                name: optionName,
+                aliases: [optionName, parameter.Name!])
+            {
+                Description = string.Empty,
+                Required = isRequired,
+                HelpName = optionName
+            };
 
-            resultOption.IsRequired = isRequired;
-            resultOption.ArgumentHelpName = optionName;
-            
             return resultOption;
         }
 
-        private static T? InvokeArgumentParser<T>(ArgumentResult argumentResult, string optionName, Func<string, T> fromString)
+        private static string GetOptionName(ParameterInfo parameter)
         {
-            try
+            var defaultParameterName = "DEFAULT";
+            var optionName = $"--{parameter.Name ?? defaultParameterName}";
+            return optionName;
+        }
+
+        private Action<ParseResult> InvokeMethod(MethodInfo method)
+            => (context) => InvokeMethodWithContext(context, method);
+
+        private void InvokeMethodWithContext(ParseResult context, MethodInfo method)
+            => method.Invoke(_implementation, GetArguments(context, method));
+
+        private object?[]? GetArguments(ParseResult context, MethodInfo method)
+            => [.. method.GetParameters()
+                .Select(parameter => GetArgumentValue(method, parameter, context))];
+
+        private object? GetArgumentValue(MethodInfo method, ParameterInfo parameter, ParseResult context)
+        {
+            object? result = null;
+            var parameterName = GetOptionName(parameter)!;
+            switch (parameter.ParameterType.Name)
             {
-                var stringValue = argumentResult.Tokens.FirstOrDefault()?.Value ?? string.Empty;
-                return fromString.Invoke(stringValue);
+                case "Int":
+                    result = context.GetValue<int>(parameterName);
+                    break;
+                case "String":
+                    result = context.GetValue<string>(parameterName);
+                    break;
+                case "Bool":
+                    result = context.GetValue<bool>(parameterName);
+                    break;
+                default:
+                    break;
             }
-            catch (Exception ex)
-            {
-                argumentResult.ErrorMessage = ex.Message;
-                return default;
-            }
+            return result;
         }
     }
 }

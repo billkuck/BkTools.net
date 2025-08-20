@@ -15,7 +15,7 @@ namespace BkTools.General.CommandLineUiFromInterface
         public void AddOption(CommandLineOption option)
         {
             this.Add(option.Option.Name, option);
-            Command.AddOption(option.Option);
+            Command.Options.Add(option.Option);
         }
     }
 }

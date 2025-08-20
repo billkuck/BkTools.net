@@ -1,5 +1,4 @@
-﻿using BkTools.Infrastructure;
-using BkTools.Tools.CodeCoverageTool.CoberteraXml;
+﻿using BkTools.Tools.CodeCoverageTool.CoberteraXml;
 using BkTools.Tools.CodeCoverageTool.TestCoverageXml;
 
 namespace BkTools.Tools.CodeCoverageTool

@@ -1,11 +1,12 @@
-﻿namespace BkToolsMain
+﻿using BkTools.General.CommandLineUiFromInterface;
+
+namespace BkToolsMain
 {
-    internal class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            BkTools.Infrastructure.BkToolsConfig config;
-            Console.WriteLine("Hello, World!");
+            new CommandLineFromInterface<IBkTool>(new BkTool(), "BkTool").Execute(args);
         }
     }
 }
