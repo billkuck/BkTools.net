@@ -1,6 +1,6 @@
 ﻿using BkTools.General;
 
-namespace BkTools.Tools.CodeCoverageTool.CoberteraXml
+namespace BkTools.Tools.CodeCoverage.CoberteraXml
 {
     public class CoberteraXmlFile
     {

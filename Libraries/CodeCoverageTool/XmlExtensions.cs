@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace BkTools.Tools.CodeCoverageTool
+namespace BkTools.Tools.CodeCoverage
 {
     public static class XmlExtensions
     {

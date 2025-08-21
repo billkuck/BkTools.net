@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BkToolsMain", "BkToolsMain.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{FCA94464-F8F2-4ECB-90E2-2B0EEE501868}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BkTools.Tools.CodeCoverageTool", "..\Libraries\CodeCoverageTool\BkTools.Tools.CodeCoverageTool.csproj", "{540070D6-A4EC-C1D7-B786-09D55373A87D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeCoverage", "..\Libraries\CodeCoverageTool\CodeCoverage.csproj", "{540070D6-A4EC-C1D7-B786-09D55373A87D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BkTools.General", "..\BkTools.General\BkTools.General.csproj", "{25FDBD59-55BA-4925-8D10-7F59CE931F9F}"
 EndProject

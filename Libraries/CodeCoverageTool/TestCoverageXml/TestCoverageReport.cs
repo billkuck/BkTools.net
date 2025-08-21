@@ -1,5 +1,5 @@
 ﻿
-namespace BkTools.Tools.CodeCoverageTool.TestCoverageXml
+namespace BkTools.Tools.CodeCoverage.TestCoverageXml
 {
     public class TestCoverageReport
     {

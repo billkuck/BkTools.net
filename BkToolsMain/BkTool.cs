@@ -4,7 +4,7 @@
     {
         public void Crap(string coberteraFile, string outputFile)
         {
-            BkTools.Tools.CodeCoverageTool.Tool.CrapReport(coberteraFile, outputFile);
+            BkTools.Tools.CodeCoverage.Tool.CrapReport(coberteraFile, outputFile);
         }
     }
 }

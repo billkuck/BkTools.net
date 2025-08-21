@@ -1,7 +1,6 @@
-﻿using BkTools.Tools.CodeCoverageTool.CoberteraXml;
-using BkTools.Tools.CodeCoverageTool.TestCoverageXml;
+﻿using BkTools.Tools.CodeCoverage.CoberteraXml;
 
-namespace BkTools.Tools.CodeCoverageTool
+namespace BkTools.Tools.CodeCoverage
 {
     public class Tool
     {
@@ -21,12 +20,5 @@ namespace BkTools.Tools.CodeCoverageTool
 
         public static string CrapReport(string coberteraFilePath, string outputFileName) 
             => CoberteraReport.Report(new CoberteraXml.CoberteraXmlFile(coberteraFilePath), outputFileName);
-
-        private static void TestCoverage2()
-        {
-            var filePath = @"C:\DEV\CART-API-2024-06-27-001.coveragexml";
-            var coverageFile = new TestCoverageXmlFile(filePath);
-            TestCoverageReport.Report(coverageFile.Coverage, @"C:\DEV\CART-Coverage.txt");
-        }
     }
 }

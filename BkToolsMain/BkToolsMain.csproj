@@ -10,7 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BkTools.General\BkTools.General.csproj" />
     <ProjectReference Include="..\BkTools.Infrastructure\BkTools.Infrastructure.csproj" />
-    <ProjectReference Include="..\Libraries\CodeCoverageTool\BkTools.Tools.CodeCoverageTool.csproj" />
+    <ProjectReference Include="..\Libraries\CodeCoverageTool\BkTools.Tools.CodeCoverage.csproj" />
   </ItemGroup>
 
 </Project>

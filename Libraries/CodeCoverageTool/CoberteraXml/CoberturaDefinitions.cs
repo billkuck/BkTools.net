@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace BkTools.Tools.CodeCoverageTool.CoberteraXml
+namespace BkTools.Tools.CodeCoverage.CoberteraXml
 {
     public class CoberturaDefinitions
     {
