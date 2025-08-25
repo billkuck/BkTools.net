@@ -1,14 +1,25 @@
-﻿using System.CommandLine;
+﻿//using System.CommandLine;
+//using System.CommandLine.Parsing;
 
-namespace BkTools.General.CommandLineUiFromInterface
-{
-    public class CommandLineOption
-    {
-        public Option Option { get; private set; }
+//namespace BkTools.General.CommandLineUiFromInterface
+//{
+//    public class CommandLineOption : Option
+//    {
 
-        public CommandLineOption(Option option)
-        {
-            Option = option;
-        }
-    }
-}
+//        public override Type ValueType => throw new NotImplementedException();
+
+//        internal override Argument Argument => throw new NotImplementedException();
+//    }
+
+//    public class CommandLineArgument : Argument
+//    {
+//        public override Type ValueType => throw new NotImplementedException();
+
+//        public override bool HasDefaultValue => throw new NotImplementedException();
+
+//        internal override object? GetDefaultValue(ArgumentResult argumentResult)
+//        {
+//            throw new NotImplementedException();
+//        }
+//    }
+//}

@@ -1,6 +1,4 @@
 ﻿using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using System.Reflection;
 
 namespace BkTools.General.CommandLineUiFromInterface
@@ -40,20 +38,12 @@ namespace BkTools.General.CommandLineUiFromInterface
             methodCommand.Command.SetAction(InvokeMethod(method));
             return methodCommand;
         }
-        private CommandLineOption CreateOption(ParameterInfo parameter, bool isRequired = true)
-            => GetValueByDataType.TryGetValue(parameter.ParameterType.Name, out var conversionMethod)
-                ? new CommandLineOption(conversionMethod.Invoke(parameter))
-                : throw new Exception($"Conversion from {parameter.ParameterType.Name} is not implemented");
+        private Option CreateOption(ParameterInfo parameter, bool isRequired = true)
+        {
+            return new EnumOption(parameter);
+        }
 
-        private static readonly Dictionary<string, Func<ParameterInfo, Option>> GetValueByDataType
-            = new Dictionary<string, Func<ParameterInfo, Option>>()
-                {
-                    { "Int", p => GetOption(p, (arg) => int.Parse(arg)) },
-                    { "String", p => GetOption(p, (arg) => arg) },
-                    { "Boolean", p => GetOption(p, (arg) => bool.Parse(arg)) }
-                };
-
-        private static Option GetOption<T>(ParameterInfo parameter, Func<string, T> fromString, bool isRequired = true)
+        private static Option GetOption<T>(ParameterInfo parameter, bool isRequired = true)
         {
             var optionName = GetOptionName(parameter);
 

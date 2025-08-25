@@ -2,20 +2,14 @@
 
 namespace BkTools.General.CommandLineUiFromInterface
 {
-    public class CommandLineCommand : Dictionary<string, CommandLineOption>
+    public class CommandLineCommand 
     {
         public Command Command { get; private set; }
 
-        public CommandLineCommand(Command command, IEnumerable<CommandLineOption>? options = null)
+        public CommandLineCommand(Command command, IEnumerable<Option>? options = null)
         {
             Command = command;
-            options?.ToList().ForEach(AddOption);
-        }
-
-        public void AddOption(CommandLineOption option)
-        {
-            this.Add(option.Option.Name, option);
-            Command.Options.Add(option.Option);
+            options?.ToList().ForEach(Command.Options.Add);
         }
     }
 }

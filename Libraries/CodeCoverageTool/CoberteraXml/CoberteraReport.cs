@@ -5,6 +5,7 @@ namespace BkTools.Tools.CodeCoverage.CoberteraXml
     {
         public static string Report(CoberteraXmlFile coverageFile, string outputFileName)
         {
+            var logging = new Infrastructure.Logging();
             using (StreamWriter output = new StreamWriter(outputFileName))
             {
                 ReportHeadings(output);
