@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace BkTools.General.CommandLineUiFromInterface
@@ -6,6 +7,7 @@ namespace BkTools.General.CommandLineUiFromInterface
     public class CommandLineFromInterface<INTERFACE_TYPE>
     {
         private readonly INTERFACE_TYPE _implementation;
+
         private readonly CommandLineRootCommand _rootCommand;
         private readonly string _description;
 
@@ -38,25 +40,9 @@ namespace BkTools.General.CommandLineUiFromInterface
             methodCommand.Command.SetAction(InvokeMethod(method));
             return methodCommand;
         }
-        private Option CreateOption(ParameterInfo parameter, bool isRequired = true)
+        private Option CreateOption(ParameterInfo parameter)
         {
             return new EnumOption(parameter);
-        }
-
-        private static Option GetOption<T>(ParameterInfo parameter, bool isRequired = true)
-        {
-            var optionName = GetOptionName(parameter);
-
-            var resultOption = new Option<T>(
-                name: optionName,
-                aliases: [optionName, parameter.Name!])
-            {
-                Description = string.Empty,
-                Required = isRequired,
-                HelpName = optionName
-            };
-
-            return resultOption;
         }
 
         private static string GetOptionName(ParameterInfo parameter)
@@ -82,17 +68,34 @@ namespace BkTools.General.CommandLineUiFromInterface
             var parameterName = GetOptionName(parameter)!;
             switch (parameter.ParameterType.Name)
             {
-                case "Int":
-                    result = context.GetValue<int>(parameterName);
-                    break;
                 case "String":
                     result = context.GetValue<string>(parameterName);
+                    break;
+                case "Int":
+                    result = context.GetValue<int>(parameterName);
                     break;
                 case "Bool":
                     result = context.GetValue<bool>(parameterName);
                     break;
                 default:
+                    result = FromString(parameter.ParameterType, context.GetValue<string>(parameterName)!);
                     break;
+            }
+            return result;
+        }
+
+        public object? FromString(Type type, string value)
+        {
+            object? result = default;
+            try
+            {
+                result = TypeDescriptor
+                    .GetConverter(type)
+                    .ConvertFromInvariantString(value)!;
+            }
+            catch (Exception)
+            {
+                throw;
             }
             return result;
         }

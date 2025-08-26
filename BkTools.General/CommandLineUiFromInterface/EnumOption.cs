@@ -5,11 +5,11 @@ namespace BkTools.General.CommandLineUiFromInterface
 {
     public class EnumOption : Option<string>
     {
-        private EnumOption(string name, params string[] aliases) : base(name, aliases)
+        private EnumOption(string name, bool isOptional, params string[] aliases) : base(name, aliases)
         {
         }
 
-        public EnumOption(ParameterInfo parameter) : this(GetOptionName(parameter.Name!), GetAliases(parameter.Name))
+        public EnumOption(ParameterInfo parameter) : this(GetOptionName(parameter.Name!), parameter.IsOptional, GetAliases(parameter.Name))
         {
         }
 
